@@ -16,7 +16,7 @@ fun main() {
     ))
 
     val classpath = System.getProperty("java.class.path").split(System.getProperty("path.separator"))
-    val testFile = "/Users/margarita/Projects/KotlinBugHunting/src/main/resources/HelloWorld.kt"
+    val testFile = "src/main/resources/HelloWorld.kt"
 
     println(analyzer.analyze(listOf(File(testFile)), classpath))
 

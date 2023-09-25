@@ -24,8 +24,6 @@ class Analyzer(val rules: List<Rule>) {
                         is KtElement -> it.accept(rule, FileContext(file.second, file.first, bindingContext, results))
                     }
                 }
-
-
             }
         }
 
