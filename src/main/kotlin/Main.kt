@@ -1,25 +1,22 @@
-import org.jetbrains.kotlin.psi.KtNamedFunction
-import org.nedz.bughunting.api.FileContext
-import org.nedz.bughunting.api.Rule
 import org.nedz.bughunting.engine.Analyzer
+import org.nedz.bughunting.rules.UnusedImport1
+import org.nedz.bughunting.rules.UnusedImport2
+import org.nedz.bughunting.rules.UnusedImport3
 import java.io.File
 
 fun main() {
 
     val analyzer = Analyzer(listOf(
-        object : Rule("My rule") {
-            override fun visitNamedFunction(function: KtNamedFunction, ctx: FileContext) {
-                ctx.addIssue("Wrong function!", function)
-            }
-
-        }
+        UnusedImport1(),
+        UnusedImport2(),
+        UnusedImport3(),
     ))
 
     val classpath = System.getProperty("java.class.path").split(System.getProperty("path.separator"))
-    val testFile = "src/main/resources/HelloWorld.kt"
+    val testFile1 = "src/main/resources/package1/HelloWorld.kt"
+    val testFil2 = "src/main/resources/package2/MyCLass.kt"
 
-    println(analyzer.analyze(listOf(File(testFile)), classpath))
 
-
+    println(analyzer.analyze(listOf(File(testFile1), File(testFil2)), classpath))
 
 }
