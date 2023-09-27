@@ -1,5 +1,6 @@
 package org.nedz.bughunting.rules
 
+import org.jetbrains.kotlin.diagnostics.Errors
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtImportDirective
 import org.jetbrains.kotlin.psi.KtImportList
@@ -19,6 +20,7 @@ class UnusedImport4: Rule("Unused import 4") {
     override fun visitKtFile(file: KtFile, ctx: FileContext) {
 
         val unresolvedImports = ctx.bindingContext.diagnostics.noSuppression()
+            .filter { it.factory == Errors.UNRESOLVED_REFERENCE }
             .mapNotNull { it.psiElement.getParentOfType<KtImportDirective>(false) }
 
         val references = file

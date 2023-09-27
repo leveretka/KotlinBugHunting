@@ -10,15 +10,15 @@ fun main() {
     val analyzer = Analyzer(listOf(
         //UnusedImport1(),
         //UnusedImport2(),
-        UnusedImport3(),
+        //UnusedImport3(),
         UnusedImport4(),
     ))
 
     val classpath = System.getProperty("java.class.path").split(System.getProperty("path.separator"))
     val testFile1 = "src/main/resources/package1/HelloWorld.kt"
-    val testFil2 = "src/main/resources/package2/MyCLass.kt"
+    val testFile2 = "src/main/resources/package2/MyCLass.kt"
 
 
-    println(analyzer.analyze(listOf(File(testFile1)), classpath))
+    println(analyzer.analyze(listOf(File(testFile1), File(testFile2)), classpath))
 
 }
