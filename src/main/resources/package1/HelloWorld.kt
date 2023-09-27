@@ -7,12 +7,16 @@ import package2.contains
 import package2.invoke
 import package2.getValue
 import java.util.List
+import kotlin.streams.toList
 
-fun hello() {
+fun hello(list: List<String>) {
     val x = 5 + 6
     println(x)
     println(MyClass.MY_CONSTANT)
     println(MyClass2.MY_CONSTANT)
+
+
+    list.stream().toList()
 }
 
 class My (delegate: D) {

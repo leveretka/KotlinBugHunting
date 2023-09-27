@@ -83,7 +83,8 @@ fun compilerConfiguration(
 
     return CompilerConfiguration().apply {
         put(CommonConfigurationKeys.LANGUAGE_VERSION_SETTINGS, versionSettings)
-        put(JVMConfigurationKeys.JVM_TARGET, JvmTarget.JVM_20)
+        put(JVMConfigurationKeys.JDK_RELEASE, 11)
+        //put(JVMConfigurationKeys.JDK_RELEASE, 21)
         put(JVMConfigurationKeys.JDK_HOME, File(System.getProperty("java.home")))
         addJvmClasspathRoots(classpathFiles)
     }
