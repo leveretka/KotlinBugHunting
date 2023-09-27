@@ -4,6 +4,7 @@ import org.nedz.bughunting.rules.UnusedImport2
 import org.nedz.bughunting.rules.UnusedImport3
 import org.nedz.bughunting.rules.UnusedImport4
 import org.nedz.bughunting.rules.UnusedImport5
+import org.nedz.bughunting.rules.UnusedImport6
 import java.io.File
 
 fun main() {
@@ -13,7 +14,8 @@ fun main() {
         //UnusedImport2(),
         //UnusedImport3(),
         //UnusedImport4(),
-        UnusedImport5(),
+        //UnusedImport5(),
+        UnusedImport6(),
     ))
 
     val classpath = System.getProperty("java.class.path").split(System.getProperty("path.separator"))

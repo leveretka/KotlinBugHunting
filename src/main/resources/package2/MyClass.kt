@@ -22,3 +22,12 @@ operator fun D.getValue(my: My, property: KProperty<*>): Any {
     TODO("Not yet implemented")
 }
 
+operator fun MyList.contains(i: Int) = true
+operator fun MyList.invoke(i: Int) = this
+
+
+class MyList {
+
+}
+
+
