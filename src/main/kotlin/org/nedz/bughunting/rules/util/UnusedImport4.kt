@@ -1,4 +1,4 @@
-package org.nedz.bughunting.rules
+package org.nedz.bughunting.rules.util
 
 import org.jetbrains.kotlin.diagnostics.Errors
 import org.jetbrains.kotlin.psi.KtFile
@@ -24,7 +24,7 @@ class UnusedImport4: Rule("Unused import 4") {
             .mapNotNull { it.psiElement.getParentOfType<KtImportDirective>(false) }
 
         val references = file
-            .children.asSequence().filter { it !is  KtPackageDirective && it !is KtImportList }
+            .children.asSequence().filter { it !is KtPackageDirective && it !is KtImportList }
             .flatMap { it.collectDescendantsOfType<KtSimpleNameExpression>() }
             .mapNotNull { ctx.bindingContext[BindingContext.REFERENCE_TARGET, it]?.getImportableDescriptor() }
             .toList()

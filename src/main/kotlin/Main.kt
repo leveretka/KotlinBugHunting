@@ -1,27 +1,16 @@
 import org.nedz.bughunting.engine.Analyzer
-import org.nedz.bughunting.rules.UnusedImport1
-import org.nedz.bughunting.rules.UnusedImport2
-import org.nedz.bughunting.rules.UnusedImport3
-import org.nedz.bughunting.rules.UnusedImport4
-import org.nedz.bughunting.rules.UnusedImport5
-import org.nedz.bughunting.rules.UnusedImport6
+import org.nedz.bughunting.rules.UnusedImportRule
 import java.io.File
 
 fun main() {
 
     val analyzer = Analyzer(listOf(
-        //UnusedImport1(),
-        //UnusedImport2(),
-        //UnusedImport3(),
-        //UnusedImport4(),
-        //UnusedImport5(),
-        UnusedImport6(),
+        UnusedImportRule(),
     ))
 
     val classpath = System.getProperty("java.class.path").split(System.getProperty("path.separator"))
-    val testFile1 = "src/main/resources/package1/HelloWorld.kt"
-    val testFile2 = "src/main/resources/package2/MyCLass.kt"
-
+    val testFile1 = "src/main/resources/package1/file1.kt"
+    val testFile2 = "src/main/resources/package2/file2.kt"
 
     println(analyzer.analyze(listOf(File(testFile1), File(testFile2)), classpath))
 

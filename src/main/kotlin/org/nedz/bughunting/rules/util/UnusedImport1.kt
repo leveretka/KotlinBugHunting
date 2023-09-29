@@ -1,4 +1,4 @@
-package org.nedz.bughunting.rules
+package org.nedz.bughunting.rules.util
 
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtImportList
@@ -11,26 +11,18 @@ import org.jetbrains.kotlin.resolve.descriptorUtil.getImportableDescriptor
 import org.nedz.bughunting.api.FileContext
 import org.nedz.bughunting.api.Rule
 
-class UnusedImport2: Rule("Unused import 2") {
+class UnusedImport1: Rule("Unused import") {
 
     override fun visitKtFile(file: KtFile, ctx: FileContext) {
 
         val references = file
-            .children.asSequence().filter { it !is  KtPackageDirective && it !is KtImportList }
+            .children.asSequence().filter { it !is KtPackageDirective && it !is KtImportList }
             .flatMap { it.collectDescendantsOfType<KtSimpleNameExpression>() }
-            .mapNotNull { ctx.bindingContext[BindingContext.REFERENCE_TARGET, it]?.getImportableDescriptor() }
+            .mapNotNull { ctx.bindingContext[BindingContext.REFERENCE_TARGET, it]?.getImportableDescriptor()?.fqNameOrNull() }
             .toList()
 
         file.importDirectives
-            .filter {
-                references.none {
-                    descriptor -> descriptor.fqNameOrNull() == it.importedFqName  ||
-                        (
-                                descriptor.fqNameOrNull()?.shortName()?.asString() == "Companion" &&
-                                        it.importedFqName == descriptor.fqNameOrNull()?.parent()
-                        )
-                }
-            }
+            .filterNot { references.contains(it.importedFqName) }
             .forEach { ctx.addIssue("This import is unused", it) }
 
     }
