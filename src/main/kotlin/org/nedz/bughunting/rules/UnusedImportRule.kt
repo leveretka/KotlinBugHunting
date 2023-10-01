@@ -15,17 +15,5 @@ class UnusedImportRule : Rule("Unused Import"){
 
     override fun visitKtFile(file: KtFile, ctx: FileContext) {
 
-        val references = file
-            .children.asSequence().filter { it !is KtPackageDirective && it !is KtImportList }
-            .flatMap { it.collectDescendantsOfType<KtSimpleNameExpression>() }
-            .mapNotNull {
-                ctx.bindingContext[BindingContext.REFERENCE_TARGET, it]?.getImportableDescriptor()?.fqNameOrNull()
-            }
-            .toList()
-
-        file.importDirectives
-            .filterNot { references.contains(it.importedFqName) }
-            .forEach { ctx.addIssue("This import is unused", it) }
-
     }
 }

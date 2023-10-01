@@ -5,9 +5,10 @@ import org.jetbrains.kotlin.psi.KtElement
 import org.nedz.bughunting.api.FileContext
 import org.nedz.bughunting.api.Issue
 import org.nedz.bughunting.api.Rule
+import org.nedz.bughunting.api.SemanticModel
 import java.io.File
 
-class Analyzer(val rules: List<Rule>) {
+class Analyzer(private val rules: List<Rule>) {
 
     fun analyze(sources: List<File>, classpath: List<String>) : List<Issue> {
         val results = mutableListOf<Issue>()
@@ -21,12 +22,11 @@ class Analyzer(val rules: List<Rule>) {
             rules.forEach { rule ->
                 flattenNodes(listOf(file.first)).forEach {
                     when (it) {
-                        is KtElement -> it.accept(rule, FileContext(file.second, file.first, bindingContext, results))
+                        is KtElement -> it.accept(rule, FileContext(file.second, file.first, SemanticModel(bindingContext), results))
                     }
                 }
             }
         }
-
         return results
 
     }

@@ -5,9 +5,7 @@ import org.jetbrains.kotlin.psi.KtImportList
 import org.jetbrains.kotlin.psi.KtPackageDirective
 import org.jetbrains.kotlin.psi.KtSimpleNameExpression
 import org.jetbrains.kotlin.psi.psiUtil.collectDescendantsOfType
-import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
-import org.jetbrains.kotlin.resolve.descriptorUtil.getImportableDescriptor
 import org.nedz.bughunting.api.FileContext
 import org.nedz.bughunting.api.Rule
 
@@ -18,7 +16,7 @@ class UnusedImport2: Rule("Unused import 2") {
         val references = file
             .children.asSequence().filter { it !is KtPackageDirective && it !is KtImportList }
             .flatMap { it.collectDescendantsOfType<KtSimpleNameExpression>() }
-            .mapNotNull { ctx.bindingContext[BindingContext.REFERENCE_TARGET, it]?.getImportableDescriptor() }
+            .mapNotNull { ctx.semanticModel.getKtSimpleNameDescriptor(it) }
             .toList()
 
         file.importDirectives

@@ -15,7 +15,6 @@ import org.jetbrains.kotlin.config.ApiVersion
 import org.jetbrains.kotlin.config.CommonConfigurationKeys
 import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.config.JVMConfigurationKeys
-import org.jetbrains.kotlin.config.JvmTarget
 import org.jetbrains.kotlin.config.LanguageVersion
 import org.jetbrains.kotlin.config.LanguageVersionSettingsImpl
 import org.jetbrains.kotlin.config.languageVersionSettings
@@ -83,8 +82,8 @@ fun compilerConfiguration(
 
     return CompilerConfiguration().apply {
         put(CommonConfigurationKeys.LANGUAGE_VERSION_SETTINGS, versionSettings)
-        put(JVMConfigurationKeys.JDK_RELEASE, 11)
-        //put(JVMConfigurationKeys.JDK_RELEASE, 21)
+        //put(JVMConfigurationKeys.JDK_RELEASE, 11)
+        put(JVMConfigurationKeys.JDK_RELEASE, 21)
         put(JVMConfigurationKeys.JDK_HOME, File(System.getProperty("java.home")))
         addJvmClasspathRoots(classpathFiles)
     }
