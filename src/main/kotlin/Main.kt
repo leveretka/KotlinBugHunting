@@ -5,7 +5,7 @@ import java.io.File
 fun main() {
 
     val analyzer = Analyzer(listOf(
-        UnusedImportRule(),
+
     ))
 
     val classpath = System.getProperty("java.class.path").split(System.getProperty("path.separator"))

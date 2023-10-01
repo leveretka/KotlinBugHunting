@@ -16,13 +16,13 @@ class Analyzer(private val rules: List<Rule>) {
         val env = Env(classpath)
         val sourceFiles = sources.map { env.ktPsiFactory.createFile(it.absolutePath, it.readText()) to it.absolutePath}
 
-        val bindingContext = bindingContext(env.kotlinCoreEnvironment, sourceFiles.map { it.first })
+        val semanticModel = SemanticModel(bindingContext(env.kotlinCoreEnvironment, sourceFiles.map { it.first }))
 
         sourceFiles.forEach { file ->
             rules.forEach { rule ->
                 flattenNodes(listOf(file.first)).forEach {
                     when (it) {
-                        is KtElement -> it.accept(rule, FileContext(file.second, file.first, SemanticModel(bindingContext), results))
+                        is KtElement -> it.accept(rule, FileContext(file.second, file.first, semanticModel, results))
                     }
                 }
             }
