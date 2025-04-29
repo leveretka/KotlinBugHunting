@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    implementation( "org.jetbrains.kotlin", "kotlin-compiler", "1.9.0")
+    implementation( "org.jetbrains.kotlin", "kotlin-compiler", "2.0.20")
     implementation("com.google.code.gson:gson:2.8.9")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 
