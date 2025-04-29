@@ -1,5 +1,6 @@
 package org.nedz.bughunting.api
 
+import org.jetbrains.kotlin.analysis.api.standalone.StandaloneAnalysisAPISession
 import org.jetbrains.kotlin.descriptors.VariableAccessorDescriptor
 import org.jetbrains.kotlin.descriptors.VariableDescriptorWithAccessors
 import org.jetbrains.kotlin.descriptors.accessors
@@ -22,7 +23,7 @@ data class FileContext(
     val result: MutableList<Issue>,
 )
 
-class SemanticModel(private val bindingContext: BindingContext) {
+class SemanticModel(private val bindingContext: BindingContext, val session: StandaloneAnalysisAPISession? = null) {
 
     fun getCallExpressionFqn(call: KtCallExpression) =
         call.getResolvedCall(bindingContext)?.resultingDescriptor?.fqNameOrNull()

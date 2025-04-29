@@ -2,6 +2,7 @@ package org.nedz.bughunting.engine
 
 import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.psi.KtElement
+import org.jetbrains.kotlin.psi.KtFile
 import org.nedz.bughunting.api.FileContext
 import org.nedz.bughunting.api.Issue
 import org.nedz.bughunting.api.Rule
@@ -14,9 +15,23 @@ class Analyzer(private val rules: List<Rule>) {
         val results = mutableListOf<Issue>()
 
         val env = Env(classpath)
-        val sourceFiles = sources.map { env.ktPsiFactory.createFile(it.absolutePath, it.readText()) to it.absolutePath}
+        val sourceFiles: List<Pair<KtFile, String>> = sources.map { env.ktPsiFactory.createFile(it.absolutePath, it.readText()) to it.absolutePath}
 
-        val semanticModel = SemanticModel(bindingContext(env.kotlinCoreEnvironment, sourceFiles.map { it.first }))
+        val virtualFileSystem = KotlinFileSystem()
+        val semanticModel = SemanticModel(
+            bindingContext(env.kotlinCoreEnvironment, sourceFiles.map { it.first }),
+            createK2AnalysisSession(
+                parentDisposable = env.disposable,
+                compilerConfiguration = env.configuration,
+                virtualFiles = sourceFiles.map {
+                    KotlinVirtualFile(
+                        virtualFileSystem,
+                        File(it.second),
+                        { it.first.text }
+                    )
+                }
+            )
+        )
 
         sourceFiles.forEach { file ->
             rules.forEach { rule ->
