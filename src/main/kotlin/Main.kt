@@ -3,8 +3,9 @@ import org.nedz.bughunting.rules.UnusedImportRule
 import org.nedz.bughunting.rules.util.UnusedImport1
 import java.io.File
 import com.google.gson.GsonBuilder
+import org.nedz.bughunting.startKtorApp
 
-fun main() {
+fun test() {
 
     val analyzer = Analyzer(listOf(
         UnusedImport1()
@@ -21,4 +22,8 @@ fun main() {
     val jsonOutput = gson.toJson(issues)
     println(jsonOutput)
 
+}
+
+fun main() {
+    startKtorApp()
 }
