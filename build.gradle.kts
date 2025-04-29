@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "1.9.0"
+    kotlin("plugin.serialization") version "1.9.0"
     application
 }
 
@@ -12,15 +13,12 @@ repositories {
 
 dependencies {
     implementation( "org.jetbrains.kotlin", "kotlin-compiler", "1.9.0")
+    implementation("com.google.code.gson:gson:2.8.9")
     testImplementation(kotlin("test"))
 }
 
 tasks.test {
     useJUnitPlatform()
-}
-
-kotlin {
-    jvmToolchain(11)
 }
 
 application {
