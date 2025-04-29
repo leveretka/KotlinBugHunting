@@ -9,7 +9,7 @@ import io.ktor.http.*
 import io.ktor.server.html.*
 import kotlinx.html.*
 import org.nedz.bughunting.engine.Analyzer
-import org.nedz.bughunting.rules.util.UnusedImport1
+import org.nedz.bughunting.rules.CustomRule
 import java.io.File
 import kotlin.io.path.createTempDirectory
 
@@ -100,7 +100,7 @@ fun Application.configureRouting() {
             val filesToAnalyze = listOf(inputFile) + contextFilePaths
 
             // Run the analyzer
-            val analyzer = Analyzer(listOf(UnusedImport1()))
+            val analyzer = Analyzer(listOf(CustomRule()))
             val classpath = System.getProperty("java.class.path").split(System.getProperty("path.separator"))
             val issues = analyzer.analyze(filesToAnalyze, classpath)
 

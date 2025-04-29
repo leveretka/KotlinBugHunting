@@ -15,23 +15,20 @@ class Analyzer(private val rules: List<Rule>) {
         val results = mutableListOf<Issue>()
 
         val env = Env(classpath)
-        val sourceFiles: List<Pair<KtFile, String>> = sources.map { env.ktPsiFactory.createFile(it.absolutePath, it.readText()) to it.absolutePath}
-
         val virtualFileSystem = KotlinFileSystem()
-        val semanticModel = SemanticModel(
-            bindingContext(env.kotlinCoreEnvironment, sourceFiles.map { it.first }),
-            createK2AnalysisSession(
-                parentDisposable = env.disposable,
-                compilerConfiguration = env.configuration,
-                virtualFiles = sourceFiles.map {
-                    KotlinVirtualFile(
-                        virtualFileSystem,
-                        File(it.second),
-                        { it.first.text }
-                    )
-                }
-            )
+        val k2Session = createK2AnalysisSession(
+            parentDisposable = env.disposable,
+            compilerConfiguration = env.configuration,
+            virtualFiles = sources.map {
+                KotlinVirtualFile(
+                    virtualFileSystem,
+                    it,
+                    { it.readText() },
+                )
+            }
         )
+        val sourceFiles: List<Pair<KtFile, String>> = sources.map { s -> k2Session.modulesWithFiles.values.first().find { it.virtualFile.path == s.absolutePath }  as KtFile to s.absolutePath }
+        val semanticModel = SemanticModel()
 
         sourceFiles.forEach { file ->
             rules.forEach { rule ->

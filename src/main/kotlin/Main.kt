@@ -1,6 +1,5 @@
 import org.nedz.bughunting.engine.Analyzer
-import org.nedz.bughunting.rules.UnusedImportRule
-import org.nedz.bughunting.rules.util.UnusedImport1
+import org.nedz.bughunting.rules.CustomRule
 import java.io.File
 import com.google.gson.GsonBuilder
 import org.nedz.bughunting.startKtorApp
@@ -8,7 +7,7 @@ import org.nedz.bughunting.startKtorApp
 fun test() {
 
     val analyzer = Analyzer(listOf(
-        UnusedImport1()
+        CustomRule()
     ))
 
     val gson = GsonBuilder().setPrettyPrinting().create()

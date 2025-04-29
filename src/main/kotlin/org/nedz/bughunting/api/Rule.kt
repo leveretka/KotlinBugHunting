@@ -1,24 +1,24 @@
 package org.nedz.bughunting.api
 
-import org.jetbrains.kotlin.psi.KtElement
+import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.psi.KtVisitor
 
 open class Rule(val name: String) : KtVisitor<Unit, FileContext>() {
 
-    fun FileContext.addIssue(message: String, ktElement: KtElement) {
+    fun FileContext.addIssue(message: String, element: PsiElement) {
         this.result.add(
             Issue(
                 this.sourceFilePath,
                 name,
                 message,
-                ktElement.location(),
+                element.location(),
             )
         )
     }
 
 }
 
-private fun KtElement.location(): Location {
+private fun PsiElement.location(): Location {
     val document = containingFile.viewProvider.document
 
     val startLineNumber = document.getLineNumber(textRange.startOffset)
