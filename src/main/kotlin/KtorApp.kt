@@ -117,14 +117,73 @@ fun Application.configureRouting() {
                     it.location.startLine <= lineNumber && it.location.endLine >= lineNumber 
                 }
 
-                if (lineIssues.isNotEmpty()) {
-                    highlightedCode.append("<span class=\"highlighted-issue\" title=\"")
-                    highlightedCode.append(lineIssues.joinToString("; ") { it.message })
-                    highlightedCode.append("\">")
+                if (lineIssues.isEmpty()) {
+                    // No issues on this line, just add the escaped line
                     highlightedCode.append(line.replace("<", "&lt;").replace(">", "&gt;"))
-                    highlightedCode.append("</span>")
                 } else {
-                    highlightedCode.append(line.replace("<", "&lt;").replace(">", "&gt;"))
+                    // We have issues on this line, highlight the specific parts
+                    val escapedLine = line.replace("<", "&lt;").replace(">", "&gt;")
+
+                    // Create a list of segments to highlight
+                    data class Segment(val start: Int, val end: Int, val message: String)
+                    val segments = mutableListOf<Segment>()
+
+                    for (issue in lineIssues) {
+                        val startCol = if (issue.location.startLine == lineNumber) issue.location.startColumn - 1 else 0
+                        val endCol = if (issue.location.endLine == lineNumber) issue.location.endColumn - 1 else escapedLine.length
+                        segments.add(Segment(startCol, endCol, issue.message))
+                    }
+
+                    // Sort segments by start position
+                    segments.sortBy { it.start }
+
+                    // Merge overlapping segments
+                    val mergedSegments = mutableListOf<Segment>()
+                    var currentSegment: Segment? = null
+
+                    for (segment in segments) {
+                        if (currentSegment == null) {
+                            currentSegment = segment
+                        } else if (segment.start <= currentSegment.end) {
+                            // Segments overlap, merge them
+                            currentSegment = Segment(
+                                currentSegment.start,
+                                maxOf(currentSegment.end, segment.end),
+                                currentSegment.message + "; " + segment.message
+                            )
+                        } else {
+                            // No overlap, add current segment and start a new one
+                            mergedSegments.add(currentSegment)
+                            currentSegment = segment
+                        }
+                    }
+
+                    if (currentSegment != null) {
+                        mergedSegments.add(currentSegment)
+                    }
+
+                    // Build the highlighted line
+                    var lastEnd = 0
+                    for (segment in mergedSegments) {
+                        // Add text before the segment
+                        if (segment.start > lastEnd) {
+                            highlightedCode.append(escapedLine.substring(lastEnd, segment.start))
+                        }
+
+                        // Add the highlighted segment
+                        highlightedCode.append("<span class=\"highlighted-issue\" title=\"")
+                        highlightedCode.append(segment.message)
+                        highlightedCode.append("\">")
+                        highlightedCode.append(escapedLine.substring(segment.start, segment.end))
+                        highlightedCode.append("</span>")
+
+                        lastEnd = segment.end
+                    }
+
+                    // Add any remaining text after the last segment
+                    if (lastEnd < escapedLine.length) {
+                        highlightedCode.append(escapedLine.substring(lastEnd))
+                    }
                 }
                 highlightedCode.append("\n")
             }
@@ -168,7 +227,7 @@ fun Application.configureRouting() {
                                     div(classes = "issue-item") {
                                         h3 { +"Issue #${index + 1}: ${issue.ruleName}" }
                                         p { +issue.message }
-                                        p { +"Location: Line ${issue.location.startLine}, Column ${issue.location.startColumn}" }
+                                        p { +"Location: ${issue.location.startLine}:${issue.location.startColumn} - ${issue.location.endLine}:${issue.location.endColumn}" }
                                     }
                                 }
                             }

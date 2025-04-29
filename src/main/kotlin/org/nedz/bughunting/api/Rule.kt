@@ -28,5 +28,5 @@ private fun PsiElement.location(): Location {
     val endLineNumberOffset = document.getLineStartOffset(endLineNumber)
     val endLineOffset = textRange.endOffset - endLineNumberOffset
 
-    return Location(startLineNumber + 1, startLineOffset, endLineNumber + 1, endLineOffset)
+    return Location(startLineNumber + 1, startLineOffset + 1, endLineNumber + 1, endLineOffset + 1)
 }
