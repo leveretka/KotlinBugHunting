@@ -1,6 +1,6 @@
 package org.nedz.bughunting.engine
 
-import org.jetbrains.kotlin.com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.psi.KtElement
 import org.nedz.bughunting.api.FileContext
 import org.nedz.bughunting.api.Issue
