@@ -21,7 +21,7 @@ class TestFramework {
      */
     fun checkFileWithComments(filePath: String, rules: List<Rule> = listOf(
         org.nedz.bughunting.rules.CustomRule(),
-        org.nedz.bughunting.rules.MutableCollectionRule()
+        org.nedz.bughunting.rules.MutableCollectionRule1()
     )): TestResult {
         val file = File(filePath)
         if (!file.exists()) {
