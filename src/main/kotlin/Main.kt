@@ -1,28 +1,35 @@
-import org.nedz.bughunting.engine.Analyzer
-import org.nedz.bughunting.rules.CustomRule
-import java.io.File
-import com.google.gson.GsonBuilder
 import org.nedz.bughunting.startKtorApp
 
-fun test() {
+/**
+ * Print usage information.
+ */
+fun printUsage() {
+    println("""
+        Usage: java -jar KotlinBugHunting.jar [option]
 
-    val analyzer = Analyzer(listOf(
-        CustomRule()
-    ))
+        Options:
+          --server            Start the Ktor server (default)
+          --help              Show this help message
 
-    val gson = GsonBuilder().setPrettyPrinting().create()
+        If no option is provided, the server will be started by default.
 
-    val classpath = System.getProperty("java.class.path").split(System.getProperty("path.separator"))
-    val testFile1 = "src/main/resources/package1/file1.kt"
-    val testFile2 = "src/main/resources/package2/file2.kt"
-
-    val issues = analyzer.analyze(listOf(File(testFile1), File(testFile2)), classpath)
-
-    val jsonOutput = gson.toJson(issues)
-    println(jsonOutput)
-
+        Examples:
+          java -jar KotlinBugHunting.jar
+          java -jar KotlinBugHunting.jar --server
+    """.trimIndent())
 }
 
-fun main() {
-    startKtorApp()
+/**
+ * Main function with command-line argument parsing.
+ */
+fun main(args: Array<String>) {
+    when {
+        args.isEmpty() -> startKtorApp()
+        args.contains("--server") -> startKtorApp()
+        args.contains("--help") -> printUsage()
+        else -> {
+            println("Unknown option: ${args.joinToString(" ")}")
+            printUsage()
+        }
+    }
 }
