@@ -1,6 +1,6 @@
 package org.nedz.bughunting.rules
 
-import org.jetbrains.kotlin.analysis.api.analyze
+import org.jetbrains.kotlin.cfg.containingDeclarationForPseudocode
 import org.jetbrains.kotlin.psi.*
 import org.nedz.bughunting.api.FileContext
 import org.nedz.bughunting.api.Rule
@@ -24,27 +24,25 @@ class MutableCollectionRule2 : Rule("Unnecessary Mutable Collection") {
         // Get the property name
         val propertyName = property.name ?: return
 
-        analyze(property) {
-            val typeText = typeReference.text
+        val typeText = typeReference.text
 
-            // Check if the type is MutableList or MutableSet
-            val replacementType = when {
-                typeText.contains("MutableList") -> "List"
-                typeText.contains("MutableSet") -> "Set"
-                else -> return@analyze
-            }
+        // Check if the type is MutableList or MutableSet
+        val replacementType = when {
+            typeText.contains("MutableList") -> "List"
+            typeText.contains("MutableSet") -> "Set"
+            else -> return
+        }
 
-            // Check if the property is used in a mutating operation
-            val fileText = property.containingFile.text
-            val hasMutatingOperation = mutatingMethods.any { method ->
-                // Look for patterns like "propertyName.method("
-                fileText.contains("$propertyName.$method(")
-            }
+        // Check if the property is used in a mutating operation
+        val contextText = property.containingDeclarationForPseudocode?.text ?: property.containingFile.text
+        val hasMutatingOperation = mutatingMethods.any { method ->
+            // Look for patterns like "propertyName.method("
+            contextText.contains("$propertyName.$method(")
+        }
 
-            // Only flag the property if it's not used in a mutating operation
-            if (!hasMutatingOperation) {
-                data.addIssue("This mutable collection can be replaced with $replacementType", typeReference)
-            }
+        // Only flag the property if it's not used in a mutating operation
+        if (!hasMutatingOperation) {
+            data.addIssue("This mutable collection can be replaced with $replacementType", typeReference)
         }
     }
 }

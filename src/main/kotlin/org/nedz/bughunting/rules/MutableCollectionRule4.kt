@@ -15,7 +15,7 @@ import org.jetbrains.kotlin.psi.psiUtil.findDescendantOfType
  * It extends MutableCollectionRule2 by also checking if the collection is passed to a function
  * that expects a mutable collection type, which would indicate that the collection might be mutated.
  */
-class MutableCollectionRule3 : Rule("Unnecessary Mutable Collection") {
+class MutableCollectionRule4 : Rule("Unnecessary Mutable Collection") {
 
     // List of mutating methods for collections
     private val mutatingMethods = listOf(
@@ -31,13 +31,12 @@ class MutableCollectionRule3 : Rule("Unnecessary Mutable Collection") {
         )
 
     override fun visitProperty(property: KtProperty, data: FileContext) {
-        // Only check properties with explicit type references
-        val typeReference = property.typeReference ?: return
-
         // Get the property name
         val propertyName = property.name ?: return
 
-        val typeText = typeReference.text
+        val typeText = analyze(property) {
+            property.symbol.returnType.symbol?.classId?.shortClassName?.asString() ?: return
+        }
 
         // Check if the type is MutableList or MutableSet
         val replacementType = when {
@@ -55,7 +54,8 @@ class MutableCollectionRule3 : Rule("Unnecessary Mutable Collection") {
 
         // Only flag the property if it's not used in a mutating operation
         if (!hasMutatingOperation) {
-            data.addIssue("This mutable collection can be replaced with $replacementType", typeReference)
+            data.addIssue("This mutable collection can be replaced with $replacementType",
+                property.typeReference ?: property.initializer ?: property.nameIdentifier ?: property)
         }
     }
 

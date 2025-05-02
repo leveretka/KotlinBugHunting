@@ -53,4 +53,20 @@ class MutableCollectionRuleTest {
         // Assert that the test passed
         assertTrue(result.success, "Test failed: ${result.details}")
     }
+
+    @Test
+    fun `test mutable collections with inferred types`() {
+        // Arrange
+        val rule = MutableCollectionRule4()
+
+        // Act & Assert
+        val testFramework = TestFramework()
+        val result = testFramework.checkFileWithComments("src/main/resources/package1/collections_test4.kt", listOf(rule))
+
+        // Print the result
+        println(result.details)
+
+        // Assert that the test passed
+        assertTrue(result.success, "Test failed: ${result.details}")
+    }
 }
