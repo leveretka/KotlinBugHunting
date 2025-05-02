@@ -13,3 +13,12 @@ val analyzer = Analyzer(listOf(
                 BadNameFunctionNameRule(),
             ))
 ```
+
+Test examples use such comments convention to mark the issues: `// ISSUE|RuleName|RuleMessage|Location`
+
+See example:
+```
+fun goodName() = "Hello World"
+// ISSUE|BadNameFunctionName|This is a bad name|3:5-3:13
+fun bad_name() = "Hello World"
+```
