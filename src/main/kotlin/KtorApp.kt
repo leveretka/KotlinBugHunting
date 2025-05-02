@@ -9,6 +9,7 @@ import io.ktor.http.*
 import io.ktor.server.html.*
 import kotlinx.html.*
 import org.nedz.bughunting.engine.Analyzer
+import org.nedz.bughunting.rules.BadNameFunctionNameRule
 import org.nedz.bughunting.rules.CustomRule
 import org.nedz.bughunting.rules.MutableCollectionRule2
 import java.io.File
@@ -103,7 +104,8 @@ fun Application.configureRouting() {
             // Run the analyzer
             val analyzer = Analyzer(listOf(
                 CustomRule(),
-                MutableCollectionRule2()
+                MutableCollectionRule2(),
+                BadNameFunctionNameRule(),
             ))
             val classpath = System.getProperty("java.class.path").split(System.getProperty("path.separator"))
             val issues = analyzer.analyze(filesToAnalyze, classpath)
